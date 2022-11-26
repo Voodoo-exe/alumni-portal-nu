@@ -1,0 +1,6 @@
+export {default as Docs} from './Docs/Docs'
+export {default as Events} from './Events/Events'
+export {default as Jobs} from './Jobs/Jobs'
+export {default as Mentions} from './Mentions/Mentions'
+export {default as News} from './News/News'
+export {default as Home} from './Home/Home'
