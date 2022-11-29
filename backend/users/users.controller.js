@@ -8,6 +8,7 @@ const {
   deleteAlumnus,
   getAllAdmins,
   registerAdmin,
+  getCurrentAlumnusDetails,
 } = require("./users.service")
 const { isAuthenticatedUser } = require("../middleware/auth")
 const express = require("express")
@@ -15,6 +16,9 @@ const router = express.Router()
 
 router.route("/users").get(getAllUsers)
 router.route("/users/general").get(getAllGeneralDetails)
+router
+  .route("/users/alumnus")
+  .get(isAuthenticatedUser, getCurrentAlumnusDetails)
 router.route("/users/alumnus/login").post(loginAlumnus)
 router.route("/users/alumnus/logout").post(isAuthenticatedUser, logoutAlumnus)
 router.route("/users/alumnus/register").post(registerAlumnus)

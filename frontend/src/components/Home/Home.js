@@ -1,16 +1,9 @@
 import React from "react"
-import background from "../img/alumni.jpg"
-import Testimonials from "./Testimonials"
+import Testimonials from "../Testimonials/Testimonials"
+import "./Home.css"
+
 const Home = () => {
-  return (
-    <>
-      <div className="top">
-        <img src={background} width="100%" />
-      </div>
-      <div>
-        <div className="text">
-          <p style={{ padding: "6rem 12rem" }}>
-            At NIIT University (NU), our endeavour is to create a vibrant
+  const text = `At NIIT University (NU), our endeavour is to create a vibrant
             intellectual environment that nurtures the free thinker, the
             pro-active problem solver, the “I’ll do it on my own!” entrepreneur.
             Their journeys begin at our gates, and we are proud of their
@@ -42,8 +35,15 @@ const Home = () => {
             interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et
             Malorum" by Cicero are also reproduced in their exact original form,
             accompanied by English versions from the 1914 translation by H.
-            Rackham.
-          </p>
+            Rackham.`
+  return (
+    <>
+      <div className="top">
+        <img src="images/alumni.jpg" width="100%" />
+      </div>
+      <div>
+        <div className="text">
+          <p style={{ padding: "6rem 12rem" }}>{text}</p>
         </div>
         <Testimonials></Testimonials>
       </div>

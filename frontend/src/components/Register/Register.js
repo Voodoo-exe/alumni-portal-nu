@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import FileUpload from "react-material-file-upload"
 import { ForkLeft } from "@mui/icons-material"
@@ -6,11 +6,22 @@ import ReactPhoneInput from "react-phone-input-material-ui"
 import { TextField, withStyles } from "@material-ui/core"
 import PasswordField from "material-ui-password-field"
 import { useState } from "react"
+import { Typography } from "@material-ui/core"
 import Button from "@mui/material/Button"
 import IconButton from "@mui/material/IconButton"
 import PhotoCamera from "@mui/icons-material/PhotoCamera"
 import "./Register.scss"
 import Stack from "@mui/material/Stack"
+import { Visibility, VisibilityOff } from "@mui/icons-material"
+import InputAdornment from "@mui/material/InputAdornment"
+import * as yup from "yup"
+import { useForm, Controller } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { registerUser } from "../../features/user/userActions"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import { getLoggedInUserDetails } from "../../features/profile/profileActions"
+
 const styles = (theme) => ({
   field: {
     margin: "10px 0",
@@ -19,20 +30,116 @@ const styles = (theme) => ({
     ...theme.typography.body1,
   },
 })
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       margin: theme.spacing(1),
-      width: "100ch",
+      width: "100%",
       height: "100%",
     },
   },
 }))
 
-function Register(props) {
-  const { value, defaultCountry, onChange } = props
+const validationSchema = yup.object().shape({
+  first_name: yup.string().required("First name is required"),
+  last_name: yup.string().required("Last name is required"),
+  email_address: yup
+    .string()
+    .required("email_address is required")
+    .email("email_address is invalid"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters")
+    .max(40, "Password must not exceed 40 characters"),
+  confirmPassword: yup
+    .string()
+    .required("Confirm Password is required")
+    .oneOf([yup.ref("password"), null], "Confirm Password does not match"),
+  mobile_number: yup.string().required("Phone number is required"),
+  user_bio: yup.string(),
+  batch: yup
+    .number()
+    .min(2009, "Batch cannot precede 2009")
+    .max(9999, "Batch cannot exceed 9999"),
+  user_company: yup.string(),
+  user_location: yup.string(),
+  user_job: yup.string(),
+})
 
+function Register() {
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  })
+
+  const { loading, userInfo, error, success } = useSelector(
+    (state) => state.user
+  )
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // redirect authenticated user to profile screen
+    dispatch(getLoggedInUserDetails())
+    if (userInfo) {
+      navigate("/profile")
+    }
+  }, [navigate, userInfo, success])
+
+  const [mobile_number, setmobile_number] = useState("")
   const classes = useStyles()
+
+  const [passwordState, setPasswordState] = React.useState({
+    password: "",
+    confirmPassword: "",
+    showPassword: false,
+  })
+
+  const handlePhoneChange = (data) => {
+    // console.log(data)
+    setmobile_number(data)
+    setValue("mobile_number", data)
+  }
+
+  const handleClickShowPassword = () => {
+    setPasswordState({
+      ...passwordState,
+      showPassword: !passwordState.showPassword,
+    })
+  }
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault()
+  }
+
+  const onSubmit = (data) => {
+    data.email_address = data.email_address.toLowerCase()
+    /*
+    {
+      "user_job": "SDE Intern",
+      "user_location": "Bangalore",
+      "user_company": "Big Basket",
+      "batch": 2019,
+      "user_bio": "I work at Big Basket",
+      "mobile_number": "919817293847",
+      "confirmPassword": "avisinha",
+      "password": "avisinha",
+      "email_address": "avi@gmail.com",
+      "last_name": "sinha",
+      "first_name": "avi"
+    }
+    */
+    delete data.confirmPassword
+    console.log(JSON.stringify(data, null, 2))
+    dispatch(registerUser(data))
+  }
 
   return (
     <div id="centerDiv">
@@ -40,63 +147,154 @@ function Register(props) {
       <form
         id="survey-form"
         className={classes.root}
-        noValidate
         autoComplete="off"
+        onSubmit={handleSubmit(onSubmit)}
       >
-        <Stack
-          direction="column"
-          alignItems="center"
-          spacing={2}
-          className={classes.root}
-        >
-          <TextField
-            id="outlined-basic"
-            label="First Name"
-            variant="outlined"
-          />
-          <TextField id="outlined-basic" label="Last Name" variant="outlined" />
-          <TextField id="outlined-basic" label="Email" variant="outlined" />
-          <React.Fragment>
-            <ReactPhoneInput
-              value={value}
-              onChange={onChange} // passed function receives the phone value
-              component={TextField}
+        <Stack direction="column" alignItems="flex-start" spacing={2}>
+          <div>
+            <TextField
+              label="First Name"
+              variant="outlined"
+              {...register("first_name")}
+              error={errors.first_name ? true : false}
             />
-          </React.Fragment>
+            <Typography variant="inherit" color="textSecondary">
+              {errors.first_name?.message}
+            </Typography>
+          </div>
+          <div>
+            <TextField
+              label="Last Name"
+              variant="outlined"
+              {...register("last_name")}
+              error={errors.last_name ? true : false}
+            />
+            <Typography variant="inherit" color="textSecondary">
+              {errors.last_name?.message}
+            </Typography>
+          </div>
+          <div>
+            <TextField
+              label="email_address"
+              variant="outlined"
+              {...register("email_address")}
+              error={errors.email_address ? true : false}
+            />
+            <Typography variant="inherit" color="textSecondary">
+              {errors.email_address?.message}
+            </Typography>
+          </div>
+          <div>
+            <Controller
+              name="mobile_number"
+              control={control}
+              render={({ field }) => (
+                <ReactPhoneInput
+                  country="IN"
+                  value={mobile_number}
+                  onChange={handlePhoneChange}
+                  component={TextField}
+                  {...field}
+                />
+              )}
+            />
+          </div>
           <br></br>
           <div id="password">
-            <p>Password</p>
-            <span></span>
-            <PasswordField
-              id="password1"
-              hintText="At least 8 characters"
-              floatingLabelText="Enter your password"
-              errorText="Your password is too short"
+            <TextField
+              label="Password"
+              type={passwordState.showPassword ? "text" : "password"}
+              variant="outlined"
+              {...register("password")}
+              error={errors.password ? true : false}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {passwordState.showPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+            <Typography variant="inherit" color="textSecondary">
+              {errors.password?.message}
+            </Typography>
           </div>
           <div id="password">
-            <p>Confirm Password</p>
-            <span></span>
-            <PasswordField
-              id="password1"
-              hintText="At least 8 characters"
-              floatingLabelText="Enter your password"
-              errorText="Your password is too short"
-              label="Password"
+            <TextField
+              label="Confirm Password"
+              type={passwordState.showPassword ? "text" : "password"}
+              variant="outlined"
+              {...register("confirmPassword")}
+              error={errors.confirmPassword ? true : false}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {passwordState.showPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+            <Typography variant="inherit" color="textSecondary">
+              {errors.confirmPassword?.message}
+            </Typography>
           </div>
           <TextField
-            id="standard-multiline-static"
             label="User Bio"
             multiline
-            rows={4}
+            minRows={4}
             defaultValue=""
-            variant="standard"
+            variant="outlined"
+            fullWidth
+            {...register("user_bio")}
+            error={errors.user_bio ? true : false}
           />
-          <TextField id="outlined-basic" label="Batch" variant="outlined" />
-          <TextField id="outlined-basic" label="Company" variant="outlined" />
-          <TextField id="outlined-basic" label="Location" variant="outlined" />
-          <TextField id="outlined-basic" label="Job Role" variant="outlined" />
+          <TextField
+            label="Batch"
+            variant="outlined"
+            type="number"
+            {...register("batch")}
+            error={errors.batch ? true : false}
+          />
+          <TextField
+            label="user_company"
+            variant="outlined"
+            {...register("user_company")}
+            error={errors.user_company ? true : false}
+          />
+          <TextField
+            label="user_location"
+            variant="outlined"
+            {...register("user_location")}
+            error={errors.user_location ? true : false}
+          />
+          <TextField
+            label="Job Role"
+            variant="outlined"
+            {...register("user_job")}
+            error={errors.user_job ? true : false}
+          />
           <Button variant="contained" component="label">
             Resume Upload
             <input hidden accept="image/*" multiple type="file" />
@@ -110,6 +308,18 @@ function Register(props) {
             <input hidden accept="image/*" type="file" />
             <PhotoCamera />
           </IconButton>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            onClick={() => {
+              console.log(errors)
+            }}
+          >
+            Register
+          </Button>
+          <Typography>{errors?.content}</Typography>
+          <Typography>{error && `${error}`}</Typography>
         </Stack>
       </form>
     </div>

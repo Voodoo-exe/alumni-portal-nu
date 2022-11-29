@@ -1,6 +1,5 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import "./Profile.scss"
-
 import {
   MDBCol,
   MDBContainer,
@@ -17,25 +16,27 @@ import {
   MDBListGroupItem,
 } from "mdb-react-ui-kit"
 import { ButtonUnstyled } from "@mui/base"
+import { useSelector, useDispatch } from "react-redux"
+import { getLoggedInUserDetails } from "../../features/profile/profileActions"
 
 export default function Profile() {
-  return (
+  const dispatch = useDispatch()
+  const { loading, error, profileInfo } = useSelector((state) => state.profile)
+  const [profile, setProfile] = useState(null)
+
+  useEffect(() => {
+    if (error) console.log(error)
+    if (profileInfo) {
+      console.log(profileInfo)
+      setProfile(profileInfo)
+    }
+  }, [profileInfo, error])
+
+  return loading ? (
+    <p>Loading</p>
+  ) : profileInfo ? (
     <section style={{ backgroundColor: "rgb(230, 213, 210)" }}>
       <MDBContainer className="py-5">
-        {/* <MDBRow>
-          <MDBCol>
-            <MDBBreadcrumb className="bg-light rounded-3 p-3 mb-4">
-              <MDBBreadcrumbItem>
-                <a href="#">Home</a>
-              </MDBBreadcrumbItem>
-              <MDBBreadcrumbItem>
-                <a href="#">User</a>
-              </MDBBreadcrumbItem>
-              <MDBBreadcrumbItem active>User Profile</MDBBreadcrumbItem>
-            </MDBBreadcrumb>
-          </MDBCol>
-        </MDBRow> */}
-
         <MDBRow>
           <MDBCol lg="4">
             <MDBCard className="mb-4">
@@ -47,8 +48,10 @@ export default function Profile() {
                   style={{ width: "150px" }}
                   fluid
                 />
-                <p className="text-muted mb-1">Senior Software Engineer</p>
-                <p className="text-muted-company mb-4">Bloomberg L.P</p>
+                <p className="text-muted mb-1">{profileInfo.user_job}</p>
+                <p className="text-muted-company mb-4">
+                  {profileInfo.user_company}
+                </p>
 
                 <div className="d-flex justify-content-center mb-2">
                   <ButtonUnstyled className="btn--edit-profile">
@@ -121,7 +124,7 @@ export default function Profile() {
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">
-                      Johnatan Smith
+                      {`${profileInfo.first_name} ${profileInfo.last_name}`}
                     </MDBCardText>
                   </MDBCol>
                 </MDBRow>
@@ -133,7 +136,9 @@ export default function Profile() {
                     </MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">2019</MDBCardText>
+                    <MDBCardText className="text-muted">
+                      {profileInfo.batch}
+                    </MDBCardText>
                   </MDBCol>
                 </MDBRow>
 
@@ -146,7 +151,7 @@ export default function Profile() {
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">
-                      alumni.portal19@dev.niituniversity.in
+                      {profileInfo.email_address}
                     </MDBCardText>
                   </MDBCol>
                 </MDBRow>
@@ -159,7 +164,7 @@ export default function Profile() {
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">
-                      (098) 765-4321
+                      {profileInfo.mobile_number}
                     </MDBCardText>
                   </MDBCol>
                 </MDBRow>
@@ -173,7 +178,7 @@ export default function Profile() {
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">
-                      Senior Software Engineer
+                      {profileInfo.user_job}
                     </MDBCardText>
                   </MDBCol>
                 </MDBRow>
@@ -186,7 +191,7 @@ export default function Profile() {
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">
-                      Bloomberg L.P
+                      {profileInfo.user_company}
                     </MDBCardText>
                   </MDBCol>
                 </MDBRow>
@@ -200,7 +205,7 @@ export default function Profile() {
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">
-                      Bay Area, San Francisco, CA
+                      {profileInfo.user_location}
                     </MDBCardText>
                   </MDBCol>
                   <MDBCol sm="25">
@@ -248,5 +253,7 @@ export default function Profile() {
         </MDBRow>
       </MDBContainer>
     </section>
+  ) : (
+    <p>ProfileInfo not loaded, please log in</p>
   )
 }

@@ -13,7 +13,6 @@ const Navbar = () => {
     <>
       <Nav>
         <Bars />
-
         <NavMenu className="menu">
           <Link to="/connect" activeStyle>
             Connect
@@ -27,7 +26,6 @@ const Navbar = () => {
           <Link to="/" activeStyle>
             Home
           </Link>
-
           {/* Second Nav */}
           {/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
         </NavMenu>

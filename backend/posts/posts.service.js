@@ -35,7 +35,7 @@ const getAllEventPosts = async (req, res) => {
     let pool = await sql.connect(config)
 
     const query =
-      "SELECT U.[user_name], EP.* FROM users U, event_posts EP WHERE U.usr_id = EP.ep_user_id;"
+      "SELECT EP.* FROM users U, event_posts EP WHERE U.usr_id = EP.ep_user_id;"
 
     const event_posts = await pool.request().query(query)
 
@@ -55,7 +55,7 @@ const getEventPostsByUserId = async (req, res) => {
   try {
     let pool = await sql.connect(config)
     const user_id = req.params.user_id
-    const query = `SELECT U.[user_name], EP.* FROM users U, event_posts EP
+    const query = `SELECT EP.* FROM users U, event_posts EP
 WHERE U.usr_id = ${user_id} AND EP.ep_user_id = U.usr_id;`
     const event_posts = await pool.request().query(query)
     res.status(201).json({
@@ -96,7 +96,7 @@ INSERT INTO general_posts (post_id, gp_user_id, content) VALUES (SCOPE_IDENTITY(
 const getAllGeneralPosts = async (req, res) => {
   try {
     const query =
-      "SELECT U.[user_name], GP.* FROM users U, general_posts GP WHERE U.usr_id = GP.gp_user_id;"
+      "SELECT GP.* FROM users U, general_posts GP WHERE U.usr_id = GP.gp_user_id;"
     let pool = await sql.connect(config)
     const general_posts = await pool.request().query(query)
 
@@ -115,7 +115,7 @@ const getAllGeneralPosts = async (req, res) => {
 const getGeneralPostsByUserId = async (req, res) => {
   try {
     const gp_user_id = req.params.user_id
-    const query = `SELECT U.[user_name], GP.* FROM users U, general_posts GP WHERE U.usr_id = ${gp_user_id} and GP.gp_user_id = U.usr_id;`
+    const query = `SELECT GP.* FROM users U, general_posts GP WHERE U.usr_id = ${gp_user_id} and GP.gp_user_id = U.usr_id;`
 
     let pool = await sql.connect(config)
     const general_posts = await pool.request().query(query)
@@ -155,11 +155,11 @@ const getAllPostComments = async (req, res) => {
   try {
     let pool = await sql.connect(config)
     const query_EP =
-      "SELECT PC.*, EP.title AS post_title, U.[user_name] FROM post_comments PC, event_posts EP, users U WHERE PC.post_id = EP.post_id AND PC.pc_user_id = U.usr_id;"
+      "SELECT PC.*, EP.title AS post_title FROM post_comments PC, event_posts EP, users U WHERE PC.post_id = EP.post_id AND PC.pc_user_id = U.usr_id;"
     const event_posts_comments = await pool.request().query(query_EP)
 
     const query_GP =
-      "SELECT PC.*, GP.content as post_content, U.[user_name] FROM post_comments PC, general_posts GP, users U WHERE PC.post_id = GP.post_id AND PC.pc_user_id = U.usr_id;"
+      "SELECT PC.*, GP.content as post_content FROM post_comments PC, general_posts GP, users U WHERE PC.post_id = GP.post_id AND PC.pc_user_id = U.usr_id;"
     const general_posts_comments = await pool.request().query(query_GP)
 
     res.status(201).json({
@@ -181,7 +181,7 @@ const getPostCommentsOfPostById = async (req, res) => {
   try {
     let pool = await sql.connect(config)
     const post_id = parseInt(req.params.post_id, 10)
-    const query = `SELECT PC.*, U.[user_name] FROM users U, post_comments PC WHERE PC.post_id = ${post_id} AND PC.pc_user_id = U.usr_id;`
+    const query = `SELECT PC.* FROM users U, post_comments PC WHERE PC.post_id = ${post_id} AND PC.pc_user_id = U.usr_id;`
     const post_comments = await pool.request().query(query)
     res.status(201).json({
       success: true,

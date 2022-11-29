@@ -1,0 +1,52 @@
+[
+  {
+    "batch": "Batch:2019",
+    "photo": "images/r1.jpeg",
+    "name": "Shalom"
+  },
+  {
+    "batch": "Batch:2019",
+    "photo": "images/r2.jpeg",
+    "name": "Avi Apratim Sinha"
+  },
+  {
+    "batch": "Batch:2019",
+    "photo": "images/r3.jpeg",
+    "name": "Jaswant"
+  },
+  {
+    "batch": "Batch:2019",
+    "photo": "logo512.png",
+    "name": "Person 4"
+  },
+  {
+    "batch": "Batch:2018",
+    "photo": "logo512.png",
+    "name": "Person 5"
+  },
+  {
+    "batch": "Batch:2018",
+    "photo": "logo512.png",
+    "name": "Person 6"
+  },
+  {
+    "batch": "Batch:2017",
+    "photo": "logo512.png",
+    "name": "Person 7"
+  },
+  {
+    "batch": "Batch:2018",
+    "photo": "logo512.png",
+    "name": "Person 8"
+  },
+  {
+    "batch": "Batch:2016",
+    "photo": "logo512.png",
+    "name": "Person 9"
+  },
+  {
+    "batch": "Batch:2017",
+    "photo": "logo512.png",
+    "name": "Person 10"
+  }
+]

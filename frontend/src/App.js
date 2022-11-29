@@ -1,27 +1,46 @@
-import "./App.css"
-//import ResponsiveAppBar from './components/ResponsiveAppBar.js';
-import background from "./img/alumni.jpg"
-import { maxWidth } from "@mui/system"
-import Carousel from "./components/carousel"
-import Testimonials from "./components/Testimonials"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Connect from "./components/connect"
-import Navbar from "./components/Navbar/index.js"
-import Home from "./components/Home.js"
+import ConnectPage from "./components/ConnectPage/ConnectPage"
+import Home from "./components/Home/Home.js"
 import Profile from "./components/Profile/Profile"
 import Register from "./components/Register/Register"
-import NewNavbar from "./components/NewNavbar"
+import NewNavbar from "./components/NewNavbar/NewNavbar"
+import Login from "./components/Login/Login"
+import Logout from "./components/Logout/Logout"
+import ProtectedRoute from "./utils/ProtectedRoute"
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <Router>
         <NewNavbar></NewNavbar>
         <Routes>
-          <Route path={"/"} element={<Home />}></Route>
-          <Route path={"/connect"} element={<Connect />}></Route>
-          <Route path={"/profile"} element={<Profile />}></Route>
-          <Route path={"/register"} element={<Register />}></Route>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/connect"
+            element={
+              <ProtectedRoute>
+                <ConnectPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/logout"
+            element={
+              <ProtectedRoute>
+                <Logout />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </div>

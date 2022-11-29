@@ -1,5 +1,6 @@
 .main {
   display: flex;
+  margin-top: 2.5rem;
   height: 100vh;
   width: 100%;
   align-items: center;
@@ -23,13 +24,10 @@ ul li {
 
 .MainCard {
   border: 2px solid#813619;
-
   align-content: center;
-
   align-items: start;
   justify-content: space-between;
   display: flex;
-  float: left;
 }
 
 .CardImage {
@@ -61,4 +59,10 @@ ul li {
   color: white;
   border-radius: 10%;
   padding: 15px 32px;
+}
+
+.peoples-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

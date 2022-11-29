@@ -11,7 +11,6 @@ const registerAlumnus = async (req, res) => {
   try {
     let pool = await sql.connect(config)
     const {
-      user_name,
       first_name,
       last_name,
       email_address,
@@ -36,7 +35,7 @@ const registerAlumnus = async (req, res) => {
 
     const user_record = await pool
       .request()
-      .query(`SELECT * FROM users WHERE user_name = '${user_name}'`)
+      .query(`SELECT * FROM users WHERE email_address = '${email_address}'`)
 
     if (user_record.recordset.length > 0) {
       res.status(409).json({
@@ -58,15 +57,41 @@ const registerAlumnus = async (req, res) => {
       return
     }
 
+    // after successful registration, create JWT and return it for automatic login
     await pool
       .request()
       .query(
-        `INSERT INTO users ([user_name], first_name, last_name, email_address, mobile_number, pass_hash, user_image) VALUES ('${user_name}', '${first_name}', '${last_name}', '${email_address}', '${mobile_number}', '${pass_hash}', '${user_image}');INSERT INTO general_users VALUES (SCOPE_IDENTITY(), ${batch}, '${user_bio}', '${user_company}', '${user_location}', '${user_job}', '${user_resume}');`
+        `INSERT INTO users (first_name, last_name, email_address, mobile_number, pass_hash, user_image) VALUES ('${first_name}', '${last_name}', '${email_address}', '${mobile_number}', '${pass_hash}', '${user_image}');INSERT INTO general_users VALUES (SCOPE_IDENTITY(), ${batch}, '${user_bio}', '${user_company}', '${user_location}', '${user_job}', '${user_resume}');`
       )
 
-    res.status(201).json({
+    const curr_user = await pool
+      .request()
+      .query(
+        `SELECT TOP 1 usr_id FROM users WHERE email_address = '${email_address}' AND pass_hash = '${pass_hash}';`
+      )
+
+    if (curr_user.recordset.length == 0) {
+      res.status(401).json({
+        success: false,
+        message: "Username or password invalid!",
+      })
+      return
+    }
+
+    const user_id = parseInt(curr_user.recordset[0]["usr_id"], 10)
+
+    const accessToken = jwt.sign({ user_id: user_id }, process.env.JWT_SECRET)
+    const options = {
+      expires: new Date(
+        Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+      ),
+      httpOnly: true,
+    }
+
+    res.cookie("accessToken", accessToken, options).json({
       success: true,
-      message: "User has been created. Now you can login",
+      message: "Logged in",
+      accessToken: accessToken,
     })
   } catch (err) {
     res.status(500).json({
@@ -79,13 +104,13 @@ const registerAlumnus = async (req, res) => {
 const loginAlumnus = async (req, res) => {
   try {
     let pool = await sql.connect(config)
-    let user_name = req.body.user_name
+    let email_address = req.body.email_address
     let password = req.body.password
 
     const user_record = await pool
       .request()
       .query(
-        `SELECT TOP 1 usr_id FROM users WHERE user_name = '${user_name}' AND pass_hash = '${password}';`
+        `SELECT TOP 1 usr_id FROM users WHERE email_address = '${email_address}' AND pass_hash = '${password}';`
       )
 
     if (user_record.recordset.length == 0) {
@@ -106,10 +131,11 @@ const loginAlumnus = async (req, res) => {
       httpOnly: true,
     }
 
-    res.cookie("accessToken", accessToken, options).json({
+    res.cookie("accessToken", accessToken, options)
+    res.status(200).json({
       success: true,
       message: "Logged in",
-      accessToken: accessToken,
+      accessToken,
     })
   } catch (err) {
     res.status(500).json({
@@ -160,7 +186,7 @@ const getAllGeneralDetails = async (req, res) => {
     const generals = await pool
       .request()
       .query(
-        "SELECT usr_id, [user_name], first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id;"
+        "SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id;"
       )
     res.status(200).json({
       success: true,
@@ -206,7 +232,7 @@ const getAlumnusById = async (req, res) => {
     const users = await pool
       .request()
       .query(
-        `SELECT usr_id, [user_name], first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
+        `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
       )
 
     if (users.recordset.length == 0) {
@@ -229,6 +255,27 @@ const getAlumnusById = async (req, res) => {
   }
 }
 
+const getCurrentAlumnusDetails = async (req, res) => {
+  try {
+    const user_id = req.user.usr_id
+    let pool = await sql.connect(config)
+    const user = await pool
+      .request()
+      .query(
+        `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_image, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
+      )
+    res.status(200).json({
+      success: true,
+      data: user.recordset,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: `${err}`,
+    })
+  }
+}
+
 // ============================================
 // Admin Users related operations
 // ============================================
@@ -239,7 +286,7 @@ const getAllAdmins = async (req, res) => {
     const admins = await pool
       .request()
       .query(
-        "SELECT usr_id, [user_name], first_name, last_name, email_address, mobile_number, pass_hash, [role] FROM users U, admins A WHERE U.usr_id = A.adm_user_id"
+        "SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, [role] FROM users U, admins A WHERE U.usr_id = A.adm_user_id"
       )
     res.status(200).json({
       success: true,
@@ -257,7 +304,6 @@ const registerAdmin = async (req, res) => {
   try {
     let pool = await sql.connect(config)
     const {
-      user_name,
       first_name,
       last_name,
       email_address,
@@ -270,7 +316,7 @@ const registerAdmin = async (req, res) => {
     await pool
       .request()
       .query(
-        `INSERT INTO users (is_admin, [user_name], first_name, last_name, email_address, mobile_number, pass_hash, user_image) VALUES (1, '${user_name}', '${first_name}', '${last_name}', '${email_address}', '${mobile_number}', '${pass_hash}', '${user_image}'); INSERT INTO admins VALUES (SCOPE_IDENTITY(), '${role}');`
+        `INSERT INTO users (is_admin, first_name, last_name, email_address, mobile_number, pass_hash, user_image) VALUES (1, '${first_name}', '${last_name}', '${email_address}', '${mobile_number}', '${pass_hash}', '${user_image}'); INSERT INTO admins VALUES (SCOPE_IDENTITY(), '${role}');`
       )
     res.status(200).json({
       success: true,
@@ -320,5 +366,6 @@ module.exports = {
   getAlumnusById,
   getAllAdmins,
   registerAdmin,
+  getCurrentAlumnusDetails,
   // deleteUser,
 }

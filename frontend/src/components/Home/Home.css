@@ -1,0 +1,12 @@
+.text {
+  text-align: center;
+  background-color: #831619;
+  color: #fff;
+  font-size: medium;
+}
+
+.top {
+  max-width: 100%;
+  background-color: powderblue;
+  background-image: url(./../../../public/images/bankai.jpg);
+}
