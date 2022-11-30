@@ -38,6 +38,7 @@ function ConnectPage() {
           variant="outlined"
           fullWidth
           label="Search"
+          name="connect_search"
         />
       </div>
       <Grid

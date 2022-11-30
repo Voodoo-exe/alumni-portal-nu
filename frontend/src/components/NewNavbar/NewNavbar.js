@@ -31,7 +31,7 @@ export default function NewNavbar() {
         )}
         {userInfo && (
           <li>
-            <Link reloadDocument to="/connect">
+            <Link reloadDocument to="/connect" name="connect_link">
               Connect
             </Link>
           </li>

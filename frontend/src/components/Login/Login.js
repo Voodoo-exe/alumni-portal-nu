@@ -166,6 +166,7 @@ function Register() {
               onClick={() => {
                 console.log(errors)
               }}
+              name="login_button"
             >
               Login
             </Button>
