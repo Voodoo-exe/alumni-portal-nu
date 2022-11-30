@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import "./Profile.scss"
 import {
   MDBCol,
@@ -8,7 +8,6 @@ import {
   MDBCardText,
   MDBCardBody,
   MDBCardImage,
-  MDBBtn,
   MDBRipple,
   MDBCardTitle,
   MDBIcon,
@@ -17,23 +16,14 @@ import {
 } from "mdb-react-ui-kit"
 import { ButtonUnstyled } from "@mui/base"
 import { useSelector, useDispatch } from "react-redux"
-import { getLoggedInUserDetails } from "../../features/profile/profileActions"
+import CircularProgressIndicator from "../CircularProgressIndicator/CircularProgressIndicator"
 
 export default function Profile() {
   const dispatch = useDispatch()
   const { loading, error, profileInfo } = useSelector((state) => state.profile)
-  const [profile, setProfile] = useState(null)
-
-  useEffect(() => {
-    if (error) console.log(error)
-    if (profileInfo) {
-      console.log(profileInfo)
-      setProfile(profileInfo)
-    }
-  }, [profileInfo, error])
 
   return loading ? (
-    <p>Loading</p>
+    <CircularProgressIndicator />
   ) : profileInfo ? (
     <section style={{ backgroundColor: "rgb(230, 213, 210)" }}>
       <MDBContainer className="py-5">

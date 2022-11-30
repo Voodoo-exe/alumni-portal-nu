@@ -1,0 +1,34 @@
+.title-text {
+  background-color: #fefefe;
+  text-align: center;
+  margin: 1.2rem auto;
+}
+
+/* .post-container {
+  padding: 1rem 2rem;
+} */
+
+.post-name {
+  border-bottom: 2px solid rgb(202, 202, 202);
+}
+
+.post-name > div {
+  padding: 1rem 2rem;
+}
+
+.post-content {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.post-content > div {
+  padding: 1rem 2rem;
+}
+
+.post-date {
+  border-top: 2px solid rgb(202, 202, 202);
+}
+
+.post-date > div {
+  padding: 1rem 2rem;
+}

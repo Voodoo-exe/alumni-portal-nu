@@ -1,12 +1,9 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
 import "./styles.css"
 // import NIIT from "images/download.png"
 export default function NewNavbar() {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
   const { loading, userInfo, error, success } = useSelector(
     (state) => state.user
   )
@@ -27,7 +24,16 @@ export default function NewNavbar() {
       <ul>
         {userInfo && (
           <li>
-            <Link to="/connect">Connect</Link>
+            <Link reloadDocument to="/home">
+              Home
+            </Link>
+          </li>
+        )}
+        {userInfo && (
+          <li>
+            <Link reloadDocument to="/connect">
+              Connect
+            </Link>
           </li>
         )}
         {profileInfo && (

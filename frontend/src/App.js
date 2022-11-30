@@ -7,6 +7,7 @@ import NewNavbar from "./components/NewNavbar/NewNavbar"
 import Login from "./components/Login/Login"
 import Logout from "./components/Logout/Logout"
 import ProtectedRoute from "./utils/ProtectedRoute"
+import UserPosts from "./components/Posts/UserPosts/UserPosts"
 
 function App() {
   return (
@@ -16,7 +17,17 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
+            path="/home"
+            exact
+            element={
+              <ProtectedRoute>
+                <UserPosts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/connect"
+            exact
             element={
               <ProtectedRoute>
                 <ConnectPage />
@@ -41,6 +52,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<Home />} />
         </Routes>
       </Router>
     </div>

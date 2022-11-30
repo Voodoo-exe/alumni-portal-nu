@@ -96,7 +96,7 @@ INSERT INTO general_posts (post_id, gp_user_id, content) VALUES (SCOPE_IDENTITY(
 const getAllGeneralPosts = async (req, res) => {
   try {
     const query =
-      "SELECT GP.* FROM users U, general_posts GP WHERE U.usr_id = GP.gp_user_id;"
+      "SELECT CONCAT(U.first_name, ' ', last_name) AS full_name, GP.*FROM users U, general_posts GP WHERE U.usr_id = GP.gp_user_id ORDER BY created_at DESC;"
     let pool = await sql.connect(config)
     const general_posts = await pool.request().query(query)
 

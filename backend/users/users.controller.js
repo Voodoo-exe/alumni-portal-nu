@@ -9,6 +9,7 @@ const {
   getAllAdmins,
   registerAdmin,
   getCurrentAlumnusDetails,
+  getOtherUsers,
 } = require("./users.service")
 const { isAuthenticatedUser } = require("../middleware/auth")
 const express = require("express")
@@ -19,6 +20,7 @@ router.route("/users/general").get(getAllGeneralDetails)
 router
   .route("/users/alumnus")
   .get(isAuthenticatedUser, getCurrentAlumnusDetails)
+router.route("/users/alumnus/others").get(isAuthenticatedUser, getOtherUsers)
 router.route("/users/alumnus/login").post(loginAlumnus)
 router.route("/users/alumnus/logout").post(isAuthenticatedUser, logoutAlumnus)
 router.route("/users/alumnus/register").post(registerAlumnus)

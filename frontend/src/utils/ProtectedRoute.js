@@ -1,19 +1,17 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Navigate } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
-import { loginUser } from "../features/user/userActions"
+import { useSelector } from "react-redux"
+import CircularProgressIndicator from "../components/CircularProgressIndicator/CircularProgressIndicator"
 
 const ProtectedRoute = ({ children }) => {
-  const { loading, userInfo, accessToken, error } = useSelector(
-    (state) => state.user
-  )
+  const { loading, userInfo } = useSelector((state) => state.user)
 
   return (
     <>
       {loading ? (
-        <p>Loading...</p>
+        <CircularProgressIndicator />
       ) : !userInfo ? (
-        <Navigate to="/login" />
+        <Navigate to="/login" replace />
       ) : (
         children
       )}

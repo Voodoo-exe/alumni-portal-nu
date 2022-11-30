@@ -276,6 +276,27 @@ const getCurrentAlumnusDetails = async (req, res) => {
   }
 }
 
+const getOtherUsers = async (req, res) => {
+  try {
+    const user_id = parseInt(req.user.usr_id, 10)
+    let pool = await sql.connect(config)
+    const user = await pool
+      .request()
+      .query(
+        `SELECT usr_id, CONCAT(first_name, ' ', last_name) AS full_name, batch FROM users, general_users WHERE usr_id != ${user_id} AND general_users.gu_user_id = users.usr_id;`
+      )
+    res.status(200).json({
+      success: true,
+      data: user.recordset,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: `${err}`,
+    })
+  }
+}
+
 // ============================================
 // Admin Users related operations
 // ============================================
@@ -367,5 +388,6 @@ module.exports = {
   getAllAdmins,
   registerAdmin,
   getCurrentAlumnusDetails,
+  getOtherUsers,
   // deleteUser,
 }

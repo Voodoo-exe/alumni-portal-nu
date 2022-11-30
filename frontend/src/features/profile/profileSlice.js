@@ -30,9 +30,7 @@ const profileSlice = createSlice({
       state.error = null
     },
     [getLoggedInUserDetails.fulfilled]: (state, { payload }) => {
-      console.log("Pay")
       localStorage.setItem("profileInfo", JSON.stringify(payload.data[0]))
-      console.log("Profile payload : ", payload)
       state.loading = false
       state.success = true // registration successful
       state.profileInfo = payload.data[0]

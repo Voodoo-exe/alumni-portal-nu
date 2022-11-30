@@ -60,7 +60,9 @@
 .carousel-root {
   width: 64% !important;
   margin: auto !important;
-  margin-top: 3% !important;
+  /* margin-top: 3% !important; */
+  margin-top: 4rem !important;
+  margin-bottom: 8rem !important;
 }
 
 .carousel .slide {

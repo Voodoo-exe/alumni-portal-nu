@@ -1,12 +1,32 @@
 .text {
-  text-align: center;
+  text-align: justify;
   background-color: #831619;
   color: #fff;
   font-size: medium;
+  max-height: 70vh;
+  overflow-y: auto;
+  margin-bottom: 8rem;
+}
+
+.text p {
+  padding: 6rem 12rem;
+  font-size: 1.5rem;
 }
 
 .top {
   max-width: 100%;
   background-color: powderblue;
   background-image: url(./../../../public/images/bankai.jpg);
+}
+
+.testimonials {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+@media only screen and (max-width: 941px) {
+  .text p {
+    padding: 2rem 4rem;
+    font-size: 1.2rem;
+  }
 }

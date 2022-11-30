@@ -1,8 +1,8 @@
 import { React, useState } from "react"
-import TextField from "@mui/material/TextField"
+import { Grid, TextField, Container } from "@mui/material"
+import { useGetOthersQuery } from "../../api/connectionsSlice"
+import CircularProgressIndicator from "../CircularProgressIndicator/CircularProgressIndicator"
 import "./ConnectPage.css"
-import data from "./ListData.json"
-import Grid from "@mui/material/Grid"
 
 function ConnectPage() {
   const [inputText, setInputText] = useState("")
@@ -11,12 +11,29 @@ function ConnectPage() {
     setInputText(lowerCase)
   }
 
-  return (
-    <div className="main">
+  const { data, error, isLoading } = useGetOthersQuery()
+
+  return isLoading ? (
+    <CircularProgressIndicator />
+  ) : error ? (
+    <p>Error occured: {JSON.stringify(error)}</p>
+  ) : (
+    <Container
+      maxWidth="xl"
+      sx={{
+        width: "100%",
+        marginTop: "2rem",
+        marginBottom: "2rem",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      component="div"
+    >
       <h1>Alumni Connect</h1>
       <div className="search">
         <TextField
-          id="outlined-basic"
           onChange={inputHandler}
           variant="outlined"
           fullWidth
@@ -29,24 +46,28 @@ function ConnectPage() {
         rowSpacing={1}
         columnSpacing={{ xs: 1, sm: 2, md: 3 }}
       >
-        <UsersList input={inputText} />
+        <UsersList data={data.data} input={inputText} />
       </Grid>
-    </div>
+    </Container>
   )
 }
 
-function UsersList({ input }) {
+function UsersList({ data, input }) {
   const filteredData = data.filter((el) => {
     if (input === "") return el
 
-    return el.name.toLowerCase().includes(input)
+    return el.full_name.toLowerCase().includes(input)
   })
 
   return (
     <>
       {filteredData.map((item) => (
-        <Grid item>
-          <ConnectCard batch={item.batch} name={item.name} photo={item.photo} />
+        <Grid item key={parseInt(item.usr_id)}>
+          <ConnectCard
+            batch={item.batch}
+            name={item.full_name}
+            photo={item.photo}
+          />
         </Grid>
       ))}
     </>
@@ -54,7 +75,7 @@ function UsersList({ input }) {
 }
 
 function ConnectCard({ batch, name, photo }) {
-  const pic = photo ?? "/images/logo512.png"
+  const pic = photo ?? "logo512.png"
 
   return (
     <div className="MainCard">

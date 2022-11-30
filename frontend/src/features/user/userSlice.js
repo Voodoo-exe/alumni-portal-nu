@@ -84,6 +84,6 @@ const userSlice = createSlice({
   },
 })
 
-export const { clearErrors } = userSlice.actions
+export const { clearState } = userSlice.actions
 
 export default userSlice.reducer
