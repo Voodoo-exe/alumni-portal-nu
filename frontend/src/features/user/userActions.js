@@ -27,7 +27,7 @@ export const registerUser = createAsyncThunk(
       console.log("register userData: ", data)
       // make request to backend
       const response = await axios.post(
-        "/api/v1/users/alumnus/register/",
+        "/api/v1/users/alumnus/register",
         data,
         config
       )

@@ -57,7 +57,10 @@ function UsersList({ data, input }) {
   const filteredData = data.filter((el) => {
     if (input === "") return el
 
-    return el.full_name.toLowerCase().includes(input)
+    return (
+      el.full_name.toLowerCase().includes(input) ||
+      el.batch.toString().includes(input)
+    )
   })
 
   return (

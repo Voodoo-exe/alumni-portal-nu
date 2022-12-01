@@ -25,10 +25,10 @@ const registerAlumnus = async (req, res) => {
       user_resume,
     } = req.body
 
-    if (batch < 2017) {
+    if (batch < 2009) {
       res.status(422).json({
         success: false,
-        message: "Year must be greater than 2016 for alumnus",
+        message: "Year must be greater than 2009 for alumnus",
       })
       return
     }
