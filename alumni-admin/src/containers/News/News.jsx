@@ -1,10 +1,12 @@
 import React, { useState } from "react"
+import "./News.scss"
 
-const News = () => {
+const News = () => { 
   const [title, setTitle] = useState("")
   const [desc, setDesc] = useState("")
   const [link, setLink] = useState("")
   const [image, setImage] = useState(null)
+  const [imageUrl, setImageUrl] = useState(null)
 
   const handleSubmit = (e) => {
     alert(
@@ -36,7 +38,7 @@ const News = () => {
           />
 
           <label htmlFor="desc">Desc</label>
-          <input
+          <textarea
             type="text"
             id="desc"
             onChange={(e) => setDesc(e.target.value)}
@@ -50,17 +52,26 @@ const News = () => {
           />
 
           <label htmlFor="image">Image</label>
-          <input
-            type="file"
-            id="image"
-            onChange={(e) => setImage(e.target.value)}
-          />
+          <div className="inputArea">
+            {!image && <label for="image" className="imageLabel">Drag and Drop</label>}
+            <input
+              type="file"
+              id="image"
+              onChange={(e) => {
+                setImage(e.target.value)
+                setImageUrl(URL.createObjectURL(e.target.files[0]))
+              }}
+            />
+            {image && <img className="inputImage" src={imageUrl} />}
+          </div>
 
-          <input type="submit" />
+          <div className="buttonHolder">
+            <button type="submit">Submit</button>
+          </div>
         </form>
       </div>
     </>
   )
 }
 
-export default News;
+export default News

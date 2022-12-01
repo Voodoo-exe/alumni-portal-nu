@@ -22,7 +22,7 @@ const Jobs = () => {
   }
   return (
     <>
-      <div className="docs-form">
+      <div className="jobs-form">
         <h1>Jobs Update</h1>
         <form
           onSubmit={(e) => {
@@ -44,7 +44,7 @@ const Jobs = () => {
           />
 
           <label htmlFor="desc">Description</label>
-          <input
+          <textarea
             type="text"
             id="desc"
             onChange={(e) => setDesc(e.target.value)}
@@ -57,7 +57,9 @@ const Jobs = () => {
             onChange={(e) => setLink(e.target.value)}
           />
 
-          <input type="submit" />
+          <div className="buttonHolder">
+            <button type="submit">Submit</button>
+          </div>
         </form>
       </div>
     </>

@@ -1,7 +1,7 @@
 import React from "react"
 import "./Docs.scss"
 import { useState } from "react"
-import Dropzone from "react-dropzone"
+
 
 function Docs() {
   const [name, setName] = useState("")
@@ -48,20 +48,29 @@ function Docs() {
           />
 
           <label htmlFor="desc">Desc</label>
-          <input
+          <textarea
             type="text"
             id="desc"
             onChange={(e) => setDesc(e.target.value)}
           />
 
-          <label htmlFor="file">File</label>
-          <input
-            type="file"
-            id="file"
-            onChange={(e) => setFile(e.target.value)}
-          />
+          <label htmlFor="file">Image</label>
+          <div className="inputArea">
+            {!file && (
+              <label for="file" className="fileLabel">
+                Drag and Drop
+              </label>
+            )}
+            <input
+              type="file"
+              id="file"
+              onChange={(e) => setFile(e.target.value)}
+            />
+          </div>
 
-          <input type="submit" />
+          <div className="buttonHolder">
+            <button type="submit">Submit</button>
+          </div>
         </form>
       </div>
     </>

@@ -1,9 +1,10 @@
 import React, { useState } from "react"
+import './Mentions.scss'
 
 const Mentions = () => {
   const [name, setName] = useState("")
   const [mention, setMention] = useState("")
-
+  const [imageUrl, setImageUrl] = useState(null)
   const [image, setImage] = useState(null)
 
   const handleSubmit = (e) => {
@@ -42,13 +43,26 @@ const Mentions = () => {
           />
 
           <label htmlFor="image">Image</label>
-          <input
-            type="file"
-            id="image"
-            onChange={(e) => setImage(e.target.value)}
-          />
+          <div className="inputArea">
+            {!image && (
+              <label for="image" className="imageLabel">
+                Drag and Drop
+              </label>
+            )}
+            <input
+              type="file"
+              id="image"
+              onChange={(e) => {
+                setImage(e.target.value)
+                setImageUrl(URL.createObjectURL(e.target.files[0]))
+              }}
+            />
+            {image && <img className="inputImage" src={imageUrl} />}
+          </div>
 
-          <input type="submit" />
+          <div className="buttonHolder">
+            <button type="submit">Submit</button>
+          </div>
         </form>
       </div>
     </>
